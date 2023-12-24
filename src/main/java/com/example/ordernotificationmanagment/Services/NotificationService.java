@@ -52,15 +52,14 @@ public class NotificationService {
       }
 
       db.addTemplate(orderNotification);
-      db.enqueueINQueueList(orderNotification.getContent());
+      db.enqueueINQueueList(orderNotification);
 
       return true;
     }
 
 
-    public String dequeueNotification() {
-        String notificationContent = db.dequeueFromQueueList();
-        NotificationTemplate notification = db.findByContent(notificationContent);
+    public NotificationTemplate dequeueNotification() {
+        NotificationTemplate notification = db.dequeueFromQueueList();
         if (notification != null) {
             if (notification.getSendMethod().equalsIgnoreCase("SMS")) {
 
@@ -70,7 +69,7 @@ public class NotificationService {
                 emailService.sendEmail(notification.getPlaceholders().getRecipientName(), notification.getSubject(), notification.getContent());
             }
         }
-        return notificationContent;
+        return notification;
     }
 
     public NotificationTemplate getNotification(Long id)
@@ -80,7 +79,7 @@ public class NotificationService {
     }
 
 
-    public List<String> getNotificationQueue() {
+    public List<NotificationTemplate> getNotificationQueue() {
         return new ArrayList<>(db.getQueue());
     }
 

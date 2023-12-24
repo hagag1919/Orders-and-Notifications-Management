@@ -10,28 +10,20 @@ public class Db {
 
     private static final Map<Long, NotificationTemplate> templates = new HashMap<>();
     private static final AtomicLong idGenerator = new AtomicLong(1);
-    private static final Queue<String> queue = new LinkedList<>();
+    private static final Queue<NotificationTemplate> queue = new LinkedList<>();
 
-    public static Queue<String> getQueue() {
+    public static Queue<NotificationTemplate> getQueue() {
         return queue;
     }
 
-    public static void enqueueINQueueList(String notification) {
+    public static void enqueueINQueueList(NotificationTemplate notification) {
         queue.add(notification);
     }
 
-    public static String dequeueFromQueueList() {
+    public static NotificationTemplate dequeueFromQueueList() {
         return queue.poll();
     }
 
-    public NotificationTemplate findByContent(String content) {
-        for (NotificationTemplate template : templates.values()) {
-            if (template.getContent().equals(content)) {
-                return template;
-            }
-        }
-        return null; // Return null if not found
-    }
 
     private static Db instance;
 

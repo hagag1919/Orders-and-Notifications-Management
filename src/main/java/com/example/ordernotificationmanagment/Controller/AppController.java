@@ -74,13 +74,13 @@ public class AppController {
     }
 
     @GetMapping("/notifications/queue")
-    public List<String> getNotificationQueue() {
+    public List<NotificationTemplate> getNotificationQueue() {
         return notificationService.getNotificationQueue();
     }
 
     @GetMapping("/notifications/push")
     public ResponseEntity<String> dequeueAndSendNotification() {
-        String dequeuedNotification = notificationService.dequeueNotification();
+        NotificationTemplate dequeuedNotification = notificationService.dequeueNotification();
 
         if (dequeuedNotification != null) {
             return new ResponseEntity<>("Notification pushed and sent successfully", HttpStatus.OK);
