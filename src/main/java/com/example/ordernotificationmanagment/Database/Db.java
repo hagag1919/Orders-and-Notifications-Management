@@ -1,7 +1,10 @@
 package com.example.ordernotificationmanagment.Database;
 
 
+import com.example.ordernotificationmanagment.Models.Category;
+import com.example.ordernotificationmanagment.Models.Customer;
 import com.example.ordernotificationmanagment.Models.NotificationTemplate;
+import com.example.ordernotificationmanagment.Models.Product;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,6 +29,26 @@ public class Db {
 
 
     private static Db instance;
+
+    private static List<Category> categories = new ArrayList<Category>();//All Categories IN System
+    private static List<Product> products = new ArrayList<Product>(); //All Products IN System
+    private static List<Customer> customers = new ArrayList<Customer>();//All Customers IN System
+
+    public static List<Category> getCategories()
+    {
+        return categories;
+    }
+
+    public static List<Product> getProducts()
+    {
+        return products;
+    }
+
+    public static List<Customer> getCustomers()
+    {
+        return customers;
+    }
+
 
 
     public List<NotificationTemplate> getAllTemplates() {
