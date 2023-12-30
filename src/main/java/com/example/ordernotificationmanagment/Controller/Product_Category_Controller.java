@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pc_api")
+@RequestMapping("/productCategory")
 public class Product_Category_Controller
 {
     private final IProduct_CategoryServices services = new Product_CategoryServices();
@@ -41,6 +41,5 @@ public class Product_Category_Controller
     {
         return this.services.displayRemanining_SpecificCategory(id);
     }
-
 
 }

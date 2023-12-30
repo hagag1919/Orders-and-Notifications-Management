@@ -7,7 +7,7 @@ import com.example.ordernotificationmanagment.Services.IAccountManagement;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/am_api")
+@RequestMapping("/AccountManagement")
 public class AccountManagementController {
 
     private final IAccountManagement accountManagement = new AccountManagement();

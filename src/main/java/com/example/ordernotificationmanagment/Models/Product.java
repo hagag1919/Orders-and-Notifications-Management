@@ -5,6 +5,7 @@ public class Product
     private String name,serialNumber,vendor;
     private double price;
     private int category_Id;
+    private int reminder = 0;
 
 
     public String getName()
@@ -57,5 +58,13 @@ public class Product
         this.category_Id = category_Id;
     }
 
+    public int getReminder()
+    {
+        return reminder;
+    }
 
+    public void setReminder(int reminder)
+    {
+        this.reminder = reminder;
+    }
 }

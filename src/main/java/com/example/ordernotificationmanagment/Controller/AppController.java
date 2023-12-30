@@ -20,7 +20,7 @@ public class AppController {
 
     @RequestMapping("/")
     public String index() {
-        return "Welcome To our system";
+        return "Welcome To our system👉❤️👈";
     }
 
     /*     <<<<<<< Notifications Part >>>>>>       */
@@ -60,7 +60,7 @@ public class AppController {
     }
 
     @GetMapping("/notifications/get")
-    public ResponseEntity<NotificationTemplate> get(@RequestParam Long id) {
+    public ResponseEntity<NotificationTemplate> get(@RequestParam() Long id) {
         try {
             NotificationTemplate template = notificationService.getNotification(id);
             if (template != null) {

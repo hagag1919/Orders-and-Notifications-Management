@@ -1,10 +1,7 @@
 package com.example.ordernotificationmanagment.Database;
 
 
-import com.example.ordernotificationmanagment.Models.Category;
-import com.example.ordernotificationmanagment.Models.Customer;
-import com.example.ordernotificationmanagment.Models.NotificationTemplate;
-import com.example.ordernotificationmanagment.Models.Product;
+import com.example.ordernotificationmanagment.Models.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -33,6 +30,11 @@ public class Db {
     private static List<Category> categories = new ArrayList<Category>();//All Categories IN System
     private static List<Product> products = new ArrayList<Product>(); //All Products IN System
     private static List<Customer> customers = new ArrayList<Customer>();//All Customers IN System
+    private static List<OrderComponent> placedOrders = new ArrayList<OrderComponent>();
+
+    public static List<OrderComponent> getPlacedOrders() {
+        return placedOrders;
+    }
 
     public static List<Category> getCategories()
     {
@@ -48,6 +50,38 @@ public class Db {
     {
         return customers;
     }
+
+    public static Boolean checkAvailableQuantity(List<Product> products)
+    {
+        for(Product product : products)
+        {
+            for(Product product1 : Db.products)
+            {
+                if(product.getSerialNumber().equals(product1.getSerialNumber()))
+                {
+                    if(product.getReminder() > product1.getReminder())
+                    {
+                        return false;
+                    }
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+    public static Boolean setQuantity(int productNum, String productID)
+    {
+        for(Product product : products)
+        {
+           if(productID.equals(product.getSerialNumber()) && productNum <= product.getReminder()) {
+
+               product.setReminder(product.getReminder() - productNum);
+               return true;
+           }
+        }
+        return false;
+    }
+
 
 
 
@@ -74,6 +108,40 @@ public class Db {
 
          template.setId(idGenerator.getAndIncrement());
         templates.put(template.getId(), template);
+    }
+
+    public static List<Product> getRightProducts(List<Product> oldProducts)
+    {
+        List<Product> newProducts = new ArrayList<>();
+        for(Product product : oldProducts)
+        {
+            for(Product product1 : Db.products)
+            {
+                if(product.getSerialNumber().equals(product1.getSerialNumber()))
+                {
+                    newProducts.add(product);
+                    break;
+                }
+            }
+        }
+        System.out.println("newProducts = ");
+        for(Product product : newProducts)
+        {
+            System.out.print(product);
+        }
+        return newProducts;
+    }
+    public Boolean deductionFromBalance(String userName, double deductFees, boolean makeTransaction)
+    {
+        for(Customer customer : customers)
+        {
+            if(userName.equals(customer.getUserName()) && deductFees <= customer.getBalance())
+            {
+                if(makeTransaction) customer.setBalance(customer.getBalance() - deductFees);//update balance
+                return  true;
+            }
+        }
+        return  false;
     }
 
     public NotificationTemplate getTemplateById(Long id) {
