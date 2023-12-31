@@ -5,30 +5,24 @@ import java.util.List;
 
 public class CompoundOrder extends OrderComponent
 {
-    private List<OrderComponent> subComponents = new ArrayList<OrderComponent>();
+    private List<SimpleOrder> subComponents = new ArrayList<SimpleOrder>();
 
-    public CompoundOrder(long order_id, String shippingAddress, String customerUserName, List<OrderComponent> subComponents)
+    public CompoundOrder(long order_id, String shippingAddress, String customerUserName, List<SimpleOrder> subComponents)
     {
         super(order_id, shippingAddress, customerUserName);
         this.subComponents = subComponents;
     }
-    public CompoundOrder(long order_id, String shippingAddress, String customerUserName)
-    {
-        super(order_id, shippingAddress, customerUserName);
-    }
 
-    public List<OrderComponent> getSubComponents()
+
+    public List<SimpleOrder> getSubComponents()
     {
         return subComponents;
     }
 
-//    public void setSubComponents(List<OrderComponent> orderComponent)
-//    {
-//        this.subComponents = orderComponent;
-//    }
 
 
-    public void setSubComponents(List<OrderComponent> subComponents) {
+
+    public void setSubComponents(List<SimpleOrder> subComponents) {
         this.subComponents = subComponents;
     }
 }

@@ -6,22 +6,13 @@ import java.util.List;
 public abstract class OrderComponent
 {
     private long order_id;
-    private double shippingFees ,totalCost;
+    private double shippingFees = 0.0;
+    private double totalCost =0.0;
     private String shippingAddress , customerUserName;
     private int quantity;
-    private final List<Product> products = new ArrayList<Product>();
+    private final List<ProductPlaced> productsSerial = new ArrayList<ProductPlaced>();
 
-    public OrderComponent() {}
 
-    public OrderComponent(long order_id, double shippingFees, double totalCost, String shippingAddress, String customerUserName, int quantity)
-    {
-        this.order_id = order_id;
-        this.shippingFees = shippingFees;
-        this.totalCost = totalCost;
-       this.shippingAddress = shippingAddress;
-        this.customerUserName = customerUserName;
-        this.quantity = quantity;
-    }
 
     public OrderComponent(long order_id, String shippingAddress, String customerUserName){
         this.order_id = order_id;
@@ -78,17 +69,15 @@ public abstract class OrderComponent
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public List<Product> getProducts()
+    public List<ProductPlaced> getProductsSerial()
     {
-        return products;
+        return productsSerial;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products.addAll(products);
-    }
-    public void addProduct(Product product)
-    {
-        this.products.add(product);
+    public void setProductsSerial(List<ProductPlaced> products) {
+        this.productsSerial.addAll(products);
     }
 
-}
+    }
+
+

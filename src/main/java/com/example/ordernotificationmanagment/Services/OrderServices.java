@@ -1,10 +1,7 @@
 package com.example.ordernotificationmanagment.Services;
 
 import com.example.ordernotificationmanagment.Database.Db;
-import com.example.ordernotificationmanagment.Models.CompoundOrder;
-import com.example.ordernotificationmanagment.Models.OrderComponent;
-import com.example.ordernotificationmanagment.Models.Product;
-import com.example.ordernotificationmanagment.Models.SimpleOrder;
+import com.example.ordernotificationmanagment.Models.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,25 +14,34 @@ public  class OrderServices implements  IOrderServices
 {
     private final Db db = Db.getInstance();
 
-    public boolean pay(OrderComponent placeOrder){
-        List<Product> placedProduct = Db.getRightProducts(placeOrder.getProducts());
+    public boolean pay(SimpleOrder placeOrder){
+        List<ProductPlaced> placedProduct = Db.getRightProducts(placeOrder.getProductsSerial());
+
         if (placedProduct.isEmpty())
         {
             return false;
         }
         double totalCost = 0;
         placeOrder.setShippingFees(0.10);
-        for(Product product : placedProduct)
+        List<String> validSerial = new ArrayList<>();
+        for (ProductPlaced choiceProduct : placedProduct )
         {
-            totalCost += product.getPrice() + placeOrder.getShippingFees();
+            validSerial.add(choiceProduct.getProductSerial());
+
+        }
+        List<Double> price = Db.getPrice(validSerial);
+        List<Product> productList = Db.getProductsBySerial(validSerial);
+        for(double productCost : price)
+        {
+            totalCost += productCost + placeOrder.getShippingFees();
         }
         placeOrder.setTotalCost(totalCost);
-        if(Db.checkAvailableQuantity(placedProduct) && db.deductionFromBalance(placeOrder.getCustomerUserName(), placeOrder.getTotalCost(), true))
+        if(Db.checkAvailableQuantity(productList) && db.deductionFromBalance(placeOrder.getCustomerUserName(), placeOrder.getTotalCost(), true))
         {
             Db.getPlacedOrders().add(placeOrder);
-            for(Product product : placedProduct)
+            for(ProductPlaced product : placedProduct)
             {
-                Db.setQuantity(product.getReminder(), product.getSerialNumber());
+                Db.setQuantity(product.getQuantity(), product.getProductSerial());
             }
             return true;
         }
@@ -50,19 +56,10 @@ public  class OrderServices implements  IOrderServices
     @Override
     public Boolean placeCompoundOrder(CompoundOrder placeOrder) {
 
-        List<OrderComponent> friendsOrder = placeOrder.getSubComponents();
-        OrderComponent orderadded = new SimpleOrder(placeOrder.getOrder_id(), placeOrder.getShippingAddress(), placeOrder.getCustomerUserName());
-        orderadded.setProducts(Db.getRightProducts(placeOrder.getProducts()));
-        friendsOrder.add(orderadded);
-//        List<Product> placedProduct = new ArrayList<>();
-//        
-//        for (OrderComponent order : friendsOrder){
-//            for(Product product : order.getProducts())
-//            {
-//                placedProduct.add(product);
-//            }
-//        }
 
+        List<SimpleOrder> friendsOrder = placeOrder.getSubComponents();
+        SimpleOrder orderadded = new SimpleOrder(placeOrder.getOrder_id(), placeOrder.getShippingAddress(), placeOrder.getCustomerUserName());
+        friendsOrder.add(orderadded);
 
         Set<String> locations = new HashSet<>();
         for (OrderComponent order : friendsOrder) {
@@ -72,42 +69,13 @@ public  class OrderServices implements  IOrderServices
         if (locations.size() > 1) {
             return false;
         }
+
         boolean isPlaced = true;
-        double friendCost = 0.0;
-        for (OrderComponent order : friendsOrder) {
-            for (Product product : order.getProducts()) {
-                placeOrder.setShippingFees(0.11);
-                friendCost += product.getPrice() + placeOrder.getShippingFees();
-            }
-            order.setTotalCost(friendCost);
-            isPlaced &= Db.checkAvailableQuantity(order.getProducts());
-            isPlaced &= db.deductionFromBalance(order.getCustomerUserName(), order.getTotalCost() - order.getShippingFees(), false);
-        }
-        if (isPlaced) for (OrderComponent order : friendsOrder) {
-            for (Product product : order.getProducts()) {
-                placeOrder.setShippingFees(0.11);
-                friendCost += product.getPrice() + placeOrder.getShippingFees();
-            }
-            order.setTotalCost(friendCost);
-            db.deductionFromBalance(order.getCustomerUserName(), order.getTotalCost() - order.getShippingFees(), true);
-        }
 
-        // for me
-        List<Product> placedProduct = Db.getRightProducts(placeOrder.getProducts());
-        placeOrder.setShippingFees(0.10);
-        double totalCost = 0.0;
-        for (Product product : placedProduct) {
-            totalCost += product.getPrice() + placeOrder.getShippingFees();
+        for (SimpleOrder simpleOrder : friendsOrder)
+        {
+           isPlaced &= pay(simpleOrder);
         }
-        placeOrder.setTotalCost(totalCost);
-        if (Db.checkAvailableQuantity(placedProduct) && db.deductionFromBalance(placeOrder.getCustomerUserName(), placeOrder.getTotalCost(), true)) {
-            Db.getPlacedOrders().add(placeOrder);
-            for (Product product : placedProduct) {
-                Db.setQuantity(product.getReminder(), product.getSerialNumber());
-            }
-            return true;
-        }
-
 
         return  isPlaced;
     }

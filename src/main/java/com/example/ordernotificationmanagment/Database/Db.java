@@ -93,7 +93,7 @@ public class Db {
             synchronized (Db.class) {
                 if (instance == null) {
                     instance = new Db();
-                    instance.addSampleData();
+
                 }
             }
         }
@@ -110,26 +110,54 @@ public class Db {
         templates.put(template.getId(), template);
     }
 
-    public static List<Product> getRightProducts(List<Product> oldProducts)
+
+    public static  List<Product> getProductsBySerial(List<String> serials)
     {
-        List<Product> newProducts = new ArrayList<>();
-        for(Product product : oldProducts)
+        List<Product> outProducts = new ArrayList<>();
+        for(String serial:serials)
+        {
+            for (Product product : products)
+            {
+                if (serial.equals(product.getSerialNumber()))
+                {
+                    outProducts.add(product);
+                }
+            }
+        }
+        return outProducts;
+    }
+    public static List<ProductPlaced> getRightProducts(List<ProductPlaced> oldProducts)
+    {
+        List<ProductPlaced> newProducts = new ArrayList<ProductPlaced>();
+
+        for(ProductPlaced product : oldProducts)
         {
             for(Product product1 : Db.products)
             {
-                if(product.getSerialNumber().equals(product1.getSerialNumber()))
+                if(product.getProductSerial().equals(product1.getSerialNumber()))
                 {
                     newProducts.add(product);
                     break;
                 }
             }
         }
-        System.out.println("newProducts = ");
-        for(Product product : newProducts)
-        {
-            System.out.print(product);
-        }
+
         return newProducts;
+    }
+
+    public static List<Double> getPrice(List<String> productSerial)
+    {
+        List<Double> price = new ArrayList<>();
+       for(String productCode : productSerial)
+       {
+           for (Product product : products)
+           {
+               if(productCode.equals(product.getSerialNumber())){
+                   price.add(product.getPrice());
+               }
+           }
+       }
+        return price;
     }
     public Boolean deductionFromBalance(String userName, double deductFees, boolean makeTransaction)
     {
@@ -148,24 +176,7 @@ public class Db {
         return templates.get(id);
     }
 
-    private void addSampleData() {
-        NotificationTemplate template1 = new NotificationTemplate(null, null, null, null, null, null);
-        template1.setTemplateType("OrderPlacement");
 
-
-        template1.setSubject("Order Placement Confirmation");
-        template1.setContent("Dear {customer}, your order of {item} has been confirmed.");
-
-        NotificationTemplate template2 = new NotificationTemplate(null, null, null, null, null, null);
-
-        template2.setTemplateType("OrderShipment");
-        template2.setSubject("Order Shipment Notification");
-        template2.setContent("Hi {customer}, your order containing {item} has been shipped.");
-
-        // Add the sample templates to the Db
-        addTemplate(template1);
-        addTemplate(template2);
-    }
 }
 
 
