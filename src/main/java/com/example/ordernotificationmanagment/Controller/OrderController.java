@@ -4,6 +4,7 @@ import com.example.ordernotificationmanagment.Models.CompoundOrder;
 import com.example.ordernotificationmanagment.Models.OrderComponent;
 import com.example.ordernotificationmanagment.Models.SimpleOrder;
 import com.example.ordernotificationmanagment.Services.IOrderServices;
+import com.example.ordernotificationmanagment.Services.NotificationService;
 import com.example.ordernotificationmanagment.Services.OrderServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ public class OrderController
     public String placeCompoundOrder(@RequestBody CompoundOrder placeOrder)
     {
         if(this.orderServices.placeCompoundOrder(placeOrder)){
+
             return "Order Placed Successfully";
         }
         else{
@@ -42,5 +44,12 @@ public class OrderController
     public List<OrderComponent> getAllPlacedOrder()
     {
         return this.orderServices.getAllPlacedOrder();
+    }
+
+
+    @PostMapping(value="/cancel-order")
+    public String cancelOrder(@RequestParam Long orderId) {
+
+        return orderServices.cancelOrder(orderId);
     }
 }

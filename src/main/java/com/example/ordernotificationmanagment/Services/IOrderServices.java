@@ -12,5 +12,7 @@ public interface IOrderServices {
     public Boolean placeCompoundOrder(CompoundOrder placeOrder);
     public List<OrderComponent>  getAllPlacedOrder();
 
+    public String cancelOrder(Long orderId);
+
 
 }

@@ -8,20 +8,21 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Db {
 
-    private static final Map<Long, NotificationTemplate> templates = new HashMap<>();
+   // private static final Map<Long, NotificationTemplate> templates = new HashMap<>();
     private static final AtomicLong idGenerator = new AtomicLong(1);
-    private static final Queue<NotificationTemplate> queue = new LinkedList<>();
+    private static final Queue<NotificationTemplate> templateQueue = new LinkedList<>();
 
-    public static Queue<NotificationTemplate> getQueue() {
-        return queue;
+    public static Queue<NotificationTemplate> getemplateQueue() {
+        return templateQueue;
     }
 
     public static void enqueueINQueueList(NotificationTemplate notification) {
-        queue.add(notification);
+        templateQueue.add(notification);
     }
 
     public static NotificationTemplate dequeueFromQueueList() {
-        return queue.poll();
+
+        return templateQueue.poll();
     }
 
 
@@ -85,9 +86,9 @@ public class Db {
 
 
 
-    public List<NotificationTemplate> getAllTemplates() {
-        return new ArrayList<>(templates.values());
-    }
+//    public List<NotificationTemplate> getAllTemplates() {
+//        return new ArrayList<>(templates.values());
+//    }
     public static Db getInstance() {
         if (instance == null) {
             synchronized (Db.class) {
@@ -100,14 +101,14 @@ public class Db {
         return instance;
     }
 
-    public Map<Long, NotificationTemplate> getTemplates() {
-        return templates;
+    public Queue<NotificationTemplate> getTemplates() {
+        return templateQueue;
     }
-
+//
     public void addTemplate( NotificationTemplate template) {
 
          template.setId(idGenerator.getAndIncrement());
-        templates.put(template.getId(), template);
+        templateQueue.add(template);
     }
 
 
@@ -159,6 +160,8 @@ public class Db {
        }
         return price;
     }
+
+
     public Boolean deductionFromBalance(String userName, double deductFees, boolean makeTransaction)
     {
         for(Customer customer : customers)
@@ -173,10 +176,80 @@ public class Db {
     }
 
     public NotificationTemplate getTemplateById(Long id) {
-        return templates.get(id);
+        for (NotificationTemplate template : templateQueue) {
+            if (template.getId().equals(id)) {
+                return template;
+            }
+        }
+        return null;
     }
 
 
+    public static void cancelOrder(Long id)
+    {
+        boolean flag = false;
+        OrderComponent order = null;
+        for(OrderComponent orderComponent : placedOrders)
+        {
+            if(id == orderComponent.getOrder_id())
+            {
+                flag = true;
+                order = orderComponent;
+                placedOrders.remove(orderComponent);
+                break;
+            }
+        }
+
+        if (flag)
+        {
+            for (Customer customer : customers)
+            {
+                if (order.getCustomerUserName().equals(customer.getUserName()))
+                {
+
+                    customer.setBalance(order.getTotalCost()+customer.getBalance());
+                    break;
+
+                }
+            }
+            for (Product product : products)
+            {
+                if(order.getProductsSerial().equals(product.getSerialNumber()))
+                {
+                    product.setReminder(product.getReminder() + order.getQuantity());
+                    break;
+                }
+            }
+
+        }
+
+    }
+
+    public static  String getProductNameBySerial(String productSerial)
+    {
+        String productName = " ";
+        for (Product product : products)
+        {
+            if (productSerial.equals(product.getSerialNumber()))
+            {
+                productName = product.getName();
+            }
+        }
+
+        return  productName;
+    }
+
+    public static OrderComponent getOrderByID(Long id) {
+        for (OrderComponent orderComponent : placedOrders)
+        {
+            if(id == orderComponent.getOrder_id())
+            {
+                return  orderComponent;
+            }
+        }
+
+        return  null;
+    }
 }
 
 

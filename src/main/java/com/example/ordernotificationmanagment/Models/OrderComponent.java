@@ -1,5 +1,6 @@
 package com.example.ordernotificationmanagment.Models;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ public abstract class OrderComponent
     private String shippingAddress , customerUserName;
     private int quantity;
     private final List<ProductPlaced> productsSerial = new ArrayList<ProductPlaced>();
+    private LocalDateTime placeTime;
+
 
 
 
@@ -18,6 +21,7 @@ public abstract class OrderComponent
         this.order_id = order_id;
         this.shippingAddress = shippingAddress;
         this.customerUserName = customerUserName;
+        this.placeTime = LocalDateTime.now();
     }
 
     public long getOrder_id()
@@ -78,6 +82,14 @@ public abstract class OrderComponent
         this.productsSerial.addAll(products);
     }
 
+    public LocalDateTime getPlaceTime() {
+        return placeTime;
     }
+
+    public void setPlaceTime(LocalDateTime placeTime) {
+        this.placeTime = placeTime;
+    }
+
+}
 
 

@@ -1,11 +1,11 @@
 package com.example.ordernotificationmanagment.Models;
 
-public class orderPlacementTemplate {
+public abstract  class orderTypeTemplate {
 
     private  String productName;
     private  String recipientName;
 
-    public orderPlacementTemplate(String productName,String recipientName)
+    public orderTypeTemplate(String productName,String recipientName)
     {
         this.productName = productName;
         this.recipientName = recipientName;

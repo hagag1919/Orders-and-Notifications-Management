@@ -1,12 +1,12 @@
 package com.example.ordernotificationmanagment.Controller;
 
+import com.example.ordernotificationmanagment.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.ordernotificationmanagment.Models.NotificationTemplate;
-import com.example.ordernotificationmanagment.Models.orderPlacementTemplate;
+import com.example.ordernotificationmanagment.Models.orderTypeTemplate;
 import com.example.ordernotificationmanagment.Services.NotificationService;
 
 import java.util.List;
@@ -32,13 +32,21 @@ public class AppController {
             @RequestParam String recipientName,
             @RequestParam(required = false) String content,
             @RequestParam(required = false) String sendMethod,
+            @RequestParam(required = false) String shipCompany,
             @RequestParam(required = false) String availableLanguages
 
 
     ) {
-        orderPlacementTemplate orderPlacement = new orderPlacementTemplate(productName,recipientName);
+        orderTypeTemplate orderPlacement;
+        if(shipCompany!=null)
+       {
+            orderPlacement = new shipmentType(productName,recipientName,shipCompany);
+       }
+        else {
+            orderPlacement = new placementType(productName,recipientName);
+        }
 
-        NotificationTemplate newTemplate = new NotificationTemplate(templateType.toLowerCase(Locale.ROOT),sendMethod,subject,content,availableLanguages,orderPlacement);
+        NotificationTemplate newTemplate = new NotificationTemplate(templateType.toLowerCase(Locale.ROOT),sendMethod.toLowerCase(),subject,content,availableLanguages,orderPlacement);
 
         Boolean isCreated = notificationService.putNotification(newTemplate);
 
@@ -76,6 +84,18 @@ public class AppController {
     @GetMapping("/notifications/queue")
     public List<NotificationTemplate> getNotificationQueue() {
         return notificationService.getNotificationQueue();
+    }
+
+
+
+    @GetMapping("/notifications/report")
+    public ResponseEntity<StatisticsReport> getReport() {
+        try {
+            StatisticsReport report = notificationService.getTheNotificationsReport();
+            return new ResponseEntity<>(report, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/notifications/push")

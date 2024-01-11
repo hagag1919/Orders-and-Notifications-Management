@@ -11,7 +11,7 @@ public class NotificationTemplate {
 
     private  String sendMethod = "SMS";
     private String availableLanguages = "Ar,En,Ru";
-    private  orderPlacementTemplate placeholders;
+    private  orderTypeTemplate placeholders;
     private Long id;
     
 
@@ -28,7 +28,7 @@ public class NotificationTemplate {
         return sendMethod;
     }
 
-    public NotificationTemplate(String templateType,String sendMethod, String subject, String content , String availableLanguages, orderPlacementTemplate placeholders)
+    public NotificationTemplate(String templateType,String sendMethod, String subject, String content , String availableLanguages, orderTypeTemplate placeholders)
     {
         this.templateType = templateType;
         this.subject = subject;
@@ -53,7 +53,7 @@ public class NotificationTemplate {
         return content;
     }
 
-    public orderPlacementTemplate getPlaceholders() {
+    public orderTypeTemplate getPlaceholders() {
         return placeholders;
     }
 
@@ -77,7 +77,7 @@ public class NotificationTemplate {
         this.sendMethod = sendMethod;
     }
 
-    public void setPlaceholders(orderPlacementTemplate placeholders) {
+    public void setPlaceholders(orderTypeTemplate placeholders) {
         this.placeholders = placeholders;
     }
 
