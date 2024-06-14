@@ -79,21 +79,21 @@ public  class OrderServices implements  IOrderServices
         orderadded.setProductsSerial(placeOrder.getProductsSerial());
         friendsOrder.add(orderadded);
 
-        List<ProductPlaced> friendsProductSerials = new ArrayList<ProductPlaced>();
-        for (SimpleOrder order : friendsOrder)
-        {
-            friendsProductSerials.addAll(order.getProductsSerial());
-        }
-        List<ProductPlaced> placedProduct = Db.getRightProducts(friendsProductSerials);
-
-        List<String> validSerial = new ArrayList<>();
-        for (ProductPlaced choiceProduct : placedProduct )
-        {
-            validSerial.add(choiceProduct.getProductSerial());
-
-        }
-
-        List<Product> productList = Db.getProductsBySerial(validSerial);
+//        List<ProductPlaced> friendsProductSerials = new ArrayList<ProductPlaced>();
+//        for (SimpleOrder order : friendsOrder)
+//        {
+//            friendsProductSerials.addAll(order.getProductsSerial());
+//        }
+//        List<ProductPlaced> placedProduct = Db.getRightProducts(friendsProductSerials);
+//
+//        List<String> validSerial = new ArrayList<>();
+//        for (ProductPlaced choiceProduct : placedProduct )
+//        {
+//            validSerial.add(choiceProduct.getProductSerial());
+//
+//        }
+//
+//        List<Product> productList = Db.getProductsBySerial(validSerial);
 
         Set<String> locations = new HashSet<>();
         for (OrderComponent order : friendsOrder) {
